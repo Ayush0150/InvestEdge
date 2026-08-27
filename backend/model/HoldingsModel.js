@@ -1,6 +1,6 @@
 import { model } from "mongoose";
-import HoldingSchema from "../schemas/HoldingsSchema";
+import HoldingsSchema from "../schemas/HoldingsSchema.js";
 
-const HoldingsModel = new model("holding", HoldingSchema);
+const HoldingsModel = new model("Holding", HoldingsSchema);
 
 export default HoldingsModel;
