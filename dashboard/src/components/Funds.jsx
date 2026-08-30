@@ -1,86 +1,103 @@
-import { Link } from "react-router-dom";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 const Funds = () => {
+  const [funds, setFunds] = useState({
+    availableCash: 0,
+    openingBalance: 0,
+    usedMargin: 0,
+    currentValue: 0,
+    accountValue: 0,
+  });
+  const [amount, setAmount] = useState("");
+
+  useEffect(() => {
+    axios.get("http://localhost:3002/funds").then((res) => {
+      setFunds(res.data);
+    });
+  }, []);
+
+  const formatCurrency = (value) => {
+    return Number(value || 0).toLocaleString("en-IN", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  };
+
+  const handleAddFunds = async () => {
+    try {
+      const res = await axios.post("http://localhost:3002/funds/add", {
+        amount: Number(amount),
+      });
+
+      setFunds(res.data);
+      setAmount("");
+    } catch (error) {
+      alert(error.response?.data || "Could not add funds");
+    }
+  };
+
+  const handleWithdrawFunds = async () => {
+    try {
+      const res = await axios.post("http://localhost:3002/funds/withdraw", {
+        amount: Number(amount),
+      });
+
+      setFunds(res.data);
+      setAmount("");
+    } catch (error) {
+      alert(error.response?.data || "Could not withdraw funds");
+    }
+  };
+
   return (
-    <>
-      <div className="funds">
-        <p>Instant, zero-cost fund transfers with UPI </p>
-        <Link className="btn btn-green">Add funds</Link>
-        <Link className="btn btn-blue">Withdraw</Link>
-      </div>
-
-      <div className="row">
-        <div className="col">
-          <span>
-            <p>Equity</p>
-          </span>
-
-          <div className="table">
-            <div className="data">
-              <p>Available margin</p>
-              <p className="imp colored">4,043.10</p>
-            </div>
-            <div className="data">
-              <p>Used margin</p>
-              <p className="imp">3,757.30</p>
-            </div>
-            <div className="data">
-              <p>Available cash</p>
-              <p className="imp">4,043.10</p>
-            </div>
-            <hr />
-            <div className="data">
-              <p>Opening Balance</p>
-              <p>4,043.10</p>
-            </div>
-            <div className="data">
-              <p>Opening Balance</p>
-              <p>3736.40</p>
-            </div>
-            <div className="data">
-              <p>Payin</p>
-              <p>4064.00</p>
-            </div>
-            <div className="data">
-              <p>SPAN</p>
-              <p>0.00</p>
-            </div>
-            <div className="data">
-              <p>Delivery margin</p>
-              <p>0.00</p>
-            </div>
-            <div className="data">
-              <p>Exposure</p>
-              <p>0.00</p>
-            </div>
-            <div className="data">
-              <p>Options premium</p>
-              <p>0.00</p>
-            </div>
-            <hr />
-            <div className="data">
-              <p>Collateral (Liquid funds)</p>
-              <p>0.00</p>
-            </div>
-            <div className="data">
-              <p>Collateral (Equity)</p>
-              <p>0.00</p>
-            </div>
-            <div className="data">
-              <p>Total Collateral</p>
-              <p>0.00</p>
-            </div>
-          </div>
+    <div className="funds-page">
+      <div className="funds-header">
+        <div>
+          <h3 className="title">Funds</h3>
+          <p>Equity account</p>
         </div>
 
-        <div className="col">
-          <div className="commodity">
-            <p>You don't have a commodity account</p>
-            <Link className="btn btn-blue">Open Account</Link>
-          </div>
+        <div className="funds-actions">
+          <input
+            className="fund-input"
+            type="number"
+            min="1"
+            placeholder="Amount"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+          />
+          <button className="btn btn-green" onClick={handleAddFunds}>
+            Add funds
+          </button>
+          <button className="btn btn-blue" onClick={handleWithdrawFunds}>
+            Withdraw
+          </button>
         </div>
       </div>
-    </>
+
+      <div className="funds-metrics">
+        <div className="fund-metric fund-metric-primary">
+          <p>Available cash</p>
+          <h4>{formatCurrency(funds.availableCash)}</h4>
+        </div>
+
+        <div className="fund-metric">
+          <p>Invested amount</p>
+          <h4>{formatCurrency(funds.usedMargin)}</h4>
+        </div>
+
+        <div className="fund-metric">
+          <p>Current holdings value</p>
+          <h4>{formatCurrency(funds.currentValue)}</h4>
+        </div>
+
+        <div className="fund-metric">
+          <p>Account value</p>
+          <h4>{formatCurrency(funds.accountValue)}</h4>
+        </div>
+      </div>
+    </div>
   );
 };
 

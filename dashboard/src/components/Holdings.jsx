@@ -1,15 +1,37 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
-// import { holdings } from "../data/data.js";
+import { useEffect, useMemo, useState } from "react";
 
 const Holdings = () => {
   const [allHoldings, setAllHoldings] = useState([]);
+
   useEffect(() => {
     axios.get("http://localhost:3002/allHoldings").then((res) => {
-      console.log(res);
       setAllHoldings(res.data);
     });
   }, []);
+
+  const totals = useMemo(() => {
+    const investment = allHoldings.reduce((total, stock) => {
+      return total + Number(stock.avg || 0) * Number(stock.qty || 0);
+    }, 0);
+
+    const currentValue = allHoldings.reduce((total, stock) => {
+      return total + Number(stock.price || 0) * Number(stock.qty || 0);
+    }, 0);
+
+    const pnl = currentValue - investment;
+    const pnlPercent = investment === 0 ? 0 : (pnl / investment) * 100;
+
+    return { investment, currentValue, pnl, pnlPercent };
+  }, [allHoldings]);
+
+  const formatCurrency = (value) => {
+    return Number(value || 0).toLocaleString("en-IN", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  };
+
   return (
     <>
       <h3 className="title">Holdings ({allHoldings.length})</h3>
@@ -41,12 +63,12 @@ const Holdings = () => {
                 <tr key={index}>
                   <td>{stock.name}</td>
                   <td>{stock.qty}</td>
-                  <td>{stock.avg.toFixed(2)}</td>
-                  <td>{stock.price.toFixed(2)}</td>
-                  <td>{curValue.toFixed(2)}</td>
+                  <td>{Number(stock.avg).toFixed(2)}</td>
+                  <td>{Number(stock.price).toFixed(2)}</td>
+                  <td>{formatCurrency(curValue)}</td>
 
                   <td className={profClass}>
-                    {(curValue - stock.avg * stock.qty).toFixed(2)}
+                    {formatCurrency(curValue - stock.avg * stock.qty)}
                   </td>
 
                   <td className={profClass}>{stock.net}</td>
@@ -61,21 +83,19 @@ const Holdings = () => {
 
       <div className="row">
         <div className="col">
-          <h5>
-            29,875.<span>55</span>
-          </h5>
+          <h5>{formatCurrency(totals.investment)}</h5>
           <p>Total investment</p>
         </div>
 
         <div className="col">
-          <h5>
-            31,428.<span>95</span>
-          </h5>
+          <h5>{formatCurrency(totals.currentValue)}</h5>
           <p>Current value</p>
         </div>
 
         <div className="col">
-          <h5>1,553.40 (+5.20%)</h5>
+          <h5 className={totals.pnl >= 0 ? "profit" : "loss"}>
+            {formatCurrency(totals.pnl)} ({totals.pnlPercent.toFixed(2)}%)
+          </h5>
           <p>P&L</p>
         </div>
       </div>

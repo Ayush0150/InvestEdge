@@ -1,4 +1,40 @@
+import axios from "axios";
+import { useEffect, useState } from "react";
+
 const Summary = () => {
+  const [summary, setSummary] = useState({
+    holdingsCount: 0,
+    investment: 0,
+    currentValue: 0,
+    pnl: 0,
+    pnlPercent: 0,
+    availableCash: 0,
+    openingBalance: 0,
+    usedMargin: 0,
+  });
+
+  useEffect(() => {
+    axios.get("http://localhost:3002/portfolioSummary").then((res) => {
+      setSummary(res.data);
+    });
+  }, []);
+
+  const formatCurrency = (value) => {
+    return Number(value || 0).toLocaleString("en-IN", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  };
+
+  const formatCompact = (value) => {
+    return Number(value || 0).toLocaleString("en-IN", {
+      notation: "compact",
+      maximumFractionDigits: 2,
+    });
+  };
+
+  const pnlClass = summary.pnl >= 0 ? "profit" : "loss";
+
   return (
     <>
       <div className="username">
@@ -13,17 +49,17 @@ const Summary = () => {
 
         <div className="data">
           <div className="first">
-            <h3>3.74k</h3>
+            <h3>{formatCompact(summary.availableCash)}</h3>
             <p>Margin available</p>
           </div>
           <hr />
 
           <div className="second">
             <p>
-              Margins used <span>0</span>{" "}
+              Margins used <span>{formatCurrency(summary.usedMargin)}</span>{" "}
             </p>
             <p>
-              Opening balance <span>3.74k</span>{" "}
+              Opening balance <span>{formatCurrency(summary.openingBalance)}</span>{" "}
             </p>
           </div>
         </div>
@@ -32,13 +68,14 @@ const Summary = () => {
 
       <div className="section">
         <span>
-          <p>Holdings (13)</p>
+          <p>Holdings ({summary.holdingsCount})</p>
         </span>
 
         <div className="data">
           <div className="first">
-            <h3 className="profit">
-              1.55k <small>+5.20%</small>{" "}
+            <h3 className={pnlClass}>
+              {formatCompact(summary.pnl)}{" "}
+              <small>{summary.pnlPercent.toFixed(2)}%</small>{" "}
             </h3>
             <p>P&L</p>
           </div>
@@ -46,10 +83,10 @@ const Summary = () => {
 
           <div className="second">
             <p>
-              Current Value <span>31.43k</span>{" "}
+              Current Value <span>{formatCurrency(summary.currentValue)}</span>{" "}
             </p>
             <p>
-              Investment <span>29.88k</span>{" "}
+              Investment <span>{formatCurrency(summary.investment)}</span>{" "}
             </p>
           </div>
         </div>

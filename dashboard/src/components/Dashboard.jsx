@@ -1,7 +1,7 @@
+import { Route, Routes } from "react-router-dom";
 import Apps from "./Apps.jsx";
 import Funds from "./Funds.jsx";
 import Holdings from "./Holdings.jsx";
-import { Route, Routes } from "react-router-dom";
 import Orders from "./Orders.jsx";
 import Positions from "./Positions.jsx";
 import Summary from "./Summary.jsx";

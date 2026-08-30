@@ -2,8 +2,9 @@ import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
 import mongoose from "mongoose";
+import FundsModel from "./model/FundsModel.js";
 import HoldingsModel from "./model/HoldingsModel.js";
-import PositionsModel from "./model/PositionsModel.js";
+import OrdersModel from "./model/OrdersModel.js";
 
 dotenv.config();
 const PORT = process.env.PORT || 3002;
@@ -24,6 +25,47 @@ mongoose
 app.get("/", (req, res) => {
   res.send("Backend is working!");
 });
+
+const getFundsAccount = async () => {
+  let funds = await FundsModel.findOne({});
+
+  if (!funds) {
+    funds = await FundsModel.create({
+      openingBalance: 100000,
+      availableCash: 100000,
+    });
+  }
+
+  return funds;
+};
+
+const getPortfolioSummary = async () => {
+  const holdings = await HoldingsModel.find({});
+  const funds = await getFundsAccount();
+
+  const investment = holdings.reduce((total, stock) => {
+    return total + Number(stock.avg || 0) * Number(stock.qty || 0);
+  }, 0);
+
+  const currentValue = holdings.reduce((total, stock) => {
+    return total + Number(stock.price || 0) * Number(stock.qty || 0);
+  }, 0);
+
+  const pnl = currentValue - investment;
+  const pnlPercent = investment === 0 ? 0 : (pnl / investment) * 100;
+
+  return {
+    holdingsCount: holdings.length,
+    investment,
+    currentValue,
+    pnl,
+    pnlPercent,
+    availableCash: funds.availableCash,
+    openingBalance: funds.openingBalance,
+    usedMargin: investment,
+    accountValue: funds.availableCash + currentValue,
+  };
+};
 
 // app.get("/addHoldings", async (req, res) => {
 //   let tempHoldings = [
@@ -199,8 +241,200 @@ app.get("/allHoldings", async (req, res) => {
 });
 
 app.get("/allPositions", async (req, res) => {
-  let allPositions = await PositionsModel.find({});
+  const allOrders = await OrdersModel.find({}).sort({ createdAt: 1 });
+  const positionsMap = new Map();
+
+  allOrders.forEach((order) => {
+    const name = order.name;
+    const orderQty = Number(order.qty || 0);
+    const orderPrice = Number(order.price || 0);
+
+    if (!positionsMap.has(name)) {
+      positionsMap.set(name, {
+        product: "CNC",
+        name: name,
+        qty: 0,
+        buyValue: 0,
+        buyQty: 0,
+        price: orderPrice,
+      });
+    }
+
+    const position = positionsMap.get(name);
+
+    if (order.mode === "BUY") {
+      position.qty += orderQty;
+      position.buyQty += orderQty;
+      position.buyValue += orderQty * orderPrice;
+    }
+
+    if (order.mode === "SELL") {
+      position.qty -= orderQty;
+    }
+
+    position.price = orderPrice;
+  });
+
+  const allPositions = Array.from(positionsMap.values())
+    .filter((position) => position.qty !== 0)
+    .map((position) => {
+      const avg = position.buyQty === 0 ? position.price : position.buyValue / position.buyQty;
+      const pnl = (position.price - avg) * position.qty;
+      const day = avg === 0 ? 0 : ((position.price - avg) / avg) * 100;
+
+      return {
+        product: position.product,
+        name: position.name,
+        qty: position.qty,
+        avg: avg,
+        price: position.price,
+        pnl: pnl,
+        day: `${day.toFixed(2)}%`,
+        isLoss: pnl < 0,
+      };
+    });
+
   res.json(allPositions);
+});
+
+app.post("/newOrder", async (req, res) => {
+  try {
+    const { name, qty, price, mode } = req.body;
+
+    const orderQty = Number(qty);
+    const orderPrice = Number(price);
+    const orderMode = String(mode).toUpperCase();
+    const orderValue = orderQty * orderPrice;
+
+    if (!name || orderQty <= 0 || orderPrice <= 0) {
+      return res.status(400).send("Invalid order data");
+    }
+  
+    if (orderMode !== "BUY" && orderMode !== "SELL") {
+      return res.status(400).send("Invalid order mode");
+    }
+  
+    const funds = await getFundsAccount();
+    const existingHolding = await HoldingsModel.findOne({ name: name });
+  
+    if (orderMode === "BUY") {
+      if (funds.availableCash < orderValue) {
+        return res.status(400).send("Insufficient funds");
+      }
+  
+      if (existingHolding) {
+        const oldQty = existingHolding.qty;
+        const oldAvg = existingHolding.avg;
+  
+        const newQty = oldQty + orderQty;
+        const newAvg = (oldQty * oldAvg + orderQty * orderPrice) / newQty;
+  
+        existingHolding.qty = newQty;
+        existingHolding.avg = newAvg;
+        existingHolding.price = orderPrice;
+  
+        await existingHolding.save();
+      } else {
+        const newHolding = new HoldingsModel({
+          name: name,
+          qty: orderQty,
+          avg: orderPrice,
+          price: orderPrice,
+          net: "0.00%",
+          day: "0.00%",
+        });
+  
+        await newHolding.save();
+      }
+  
+      funds.availableCash = funds.availableCash - orderValue;
+      await funds.save();
+    }
+  
+    if (orderMode === "SELL") {
+      if (!existingHolding) {
+        return res.status(400).send("You do not own this stock");
+      }
+  
+      if (existingHolding.qty < orderQty) {
+        return res.status(400).send("Not enough quantity to sell");
+      }
+  
+      existingHolding.qty = existingHolding.qty - orderQty;
+      existingHolding.price = orderPrice;
+  
+      if (existingHolding.qty === 0) {
+        await HoldingsModel.deleteOne({ _id: existingHolding._id });
+      } else {
+        await existingHolding.save();
+      }
+  
+      funds.availableCash = funds.availableCash + orderValue;
+      await funds.save();
+    }
+  
+    const newOrder = new OrdersModel({
+      name: name,
+      qty: orderQty,
+      price: orderPrice,
+      mode: orderMode,
+    });
+  
+    await newOrder.save();
+  
+    res.send("Order saved and holdings updated");
+  } catch (error) {
+    console.log("Order failed:", error);
+    res.status(500).send("Order failed");
+  }
+});
+
+app.get("/allOrders", async (req, res) => {
+  const allOrders = await OrdersModel.find({}).sort({ createdAt: -1 });
+  res.json(allOrders);
+});
+
+app.get("/portfolioSummary", async (req, res) => {
+  res.json(await getPortfolioSummary());
+});
+
+app.get("/funds", async (req, res) => {
+  res.json(await getPortfolioSummary());
+});
+
+app.post("/funds/add", async (req, res) => {
+  const amount = Number(req.body.amount);
+
+  if (amount <= 0) {
+    return res.status(400).send("Invalid amount");
+  }
+
+  const funds = await getFundsAccount();
+  funds.availableCash = funds.availableCash + amount;
+  funds.openingBalance = funds.openingBalance + amount;
+  await funds.save();
+
+  res.json(await getPortfolioSummary());
+});
+
+app.post("/funds/withdraw", async (req, res) => {
+  const amount = Number(req.body.amount);
+
+  if (amount <= 0) {
+    return res.status(400).send("Invalid amount");
+  }
+
+  const funds = await getFundsAccount();
+
+  if (funds.availableCash < amount) {
+    return res.status(400).send("Insufficient available cash");
+  }
+
+  funds.availableCash = funds.availableCash - amount;
+  funds.openingBalance = funds.openingBalance - amount;
+  await funds.save();
+
+  res.json(await getPortfolioSummary());
 });
 
 app.listen(PORT, () => {

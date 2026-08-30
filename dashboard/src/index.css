@@ -28,18 +28,98 @@ code {
   padding: 3% 2%;
 }
 
-.funds {
+.funds-page {
   width: 100%;
-  text-align: right;
+}
+
+.funds-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid rgb(235, 235, 235);
+}
+
+.funds-header .title {
+  margin-bottom: 8px;
+}
+
+.funds-header p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: rgb(179, 179, 179);
+}
+
+.funds-actions {
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
-.funds p {
-  font-size: 0.8rem;
-  color: rgb(179, 179, 179);
-  margin-right: 8px;
+.fund-input {
+  width: 180px;
+  min-height: 40px;
+  padding: 0 12px;
+  border: 1px solid rgb(210, 210, 210);
+  border-radius: 2px;
+  font-size: 0.9rem;
+  box-sizing: border-box;
+}
+
+.fund-input:focus {
+  outline: none;
+  border-color: #4184f3;
+}
+
+.funds-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(220px, 1fr));
+  gap: 16px;
+  margin-top: 28px;
+  max-width: 760px;
+}
+
+.fund-metric {
+  border: 1px solid rgb(225, 225, 225);
+  padding: 22px 24px;
+  background: #fff;
+}
+
+.fund-metric p {
+  margin: 0 0 12px;
+  font-size: 0.9rem;
+  color: rgb(145, 145, 145);
+}
+
+.fund-metric h4 {
+  margin: 0;
+  font-size: 1.6rem;
+  line-height: 1.2;
+  font-weight: 400;
+  color: rgb(72, 72, 72);
+}
+
+.fund-metric-primary h4 {
+  color: #4184f3;
+}
+
+@media (max-width: 1100px) {
+  .funds-metrics {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 820px) {
+  .funds-header {
+    flex-direction: column;
+  }
+
+  .funds-actions {
+    justify-content: flex-start;
+  }
 }
 
 .btn {
@@ -543,6 +623,10 @@ hr {
   color: rgb(72, 194, 55);
 }
 
+.data .first .loss {
+  color: rgb(250, 118, 78);
+}
+
 .data hr {
   border-left: 0.6px solid rgb(243, 242, 242);
   height: 70px;
@@ -846,6 +930,98 @@ hr {
   background-color: rgb(212, 212, 212);
 }
 
+.apps-page {
+  width: 100%;
+}
+
+.apps-header {
+  border: 1px solid rgb(231, 231, 231);
+  padding: 24px;
+  margin-bottom: 24px;
+  background: #fff;
+}
+
+.apps-header h4 {
+  margin: 0 0 8px;
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: rgb(71, 71, 71);
+}
+
+.apps-header p {
+  margin: 0;
+  max-width: 620px;
+  line-height: 1.6;
+  font-size: 0.9rem;
+  color: rgb(120, 120, 120);
+}
+
+.apps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 16px;
+}
+
+.app-card {
+  border: 1px solid rgb(231, 231, 231);
+  padding: 18px;
+  background: #fff;
+}
+
+.app-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.app-icon {
+  width: 150px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.app-icon img {
+  max-width: 140px;
+  max-height: 42px;
+  object-fit: contain;
+}
+
+.app-card-top span {
+  font-size: 0.75rem;
+  color: rgb(120, 120, 120);
+}
+
+.app-card h5 {
+  margin: 0 0 10px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: rgb(71, 71, 71);
+}
+
+.app-card p {
+  min-height: 64px;
+  margin: 0 0 18px;
+  line-height: 1.5;
+  font-size: 0.85rem;
+  color: rgb(120, 120, 120);
+}
+
+.app-button {
+  border: 1px solid #387ed1;
+  background: #fff;
+  color: #387ed1;
+  padding: 8px 14px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.app-button:hover {
+  background: rgb(245, 248, 252);
+}
+
 .up {
     color: green;
 }
@@ -853,4 +1029,3 @@ hr {
 .down {
     color: red;
 }
-
