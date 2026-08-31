@@ -6,6 +6,11 @@ import FundsModel from "./model/FundsModel.js";
 import HoldingsModel from "./model/HoldingsModel.js";
 import OrdersModel from "./model/OrdersModel.js";
 
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import UserModel from "./model/UserModel.js";
+import authMiddleware from "./middleware/authMiddleware.js";
+
 dotenv.config();
 const PORT = process.env.PORT || 3002;
 const uri = process.env.MONGO_URL;
@@ -26,11 +31,12 @@ app.get("/", (req, res) => {
   res.send("Backend is working!");
 });
 
-const getFundsAccount = async () => {
-  let funds = await FundsModel.findOne({});
+const getFundsAccount = async (userId) => {
+  let funds = await FundsModel.findOne({ userId });
 
   if (!funds) {
     funds = await FundsModel.create({
+      userId,
       openingBalance: 100000,
       availableCash: 100000,
     });
@@ -39,9 +45,9 @@ const getFundsAccount = async () => {
   return funds;
 };
 
-const getPortfolioSummary = async () => {
-  const holdings = await HoldingsModel.find({});
-  const funds = await getFundsAccount();
+const getAccountSummary = async (userId) => {
+  const holdings = await HoldingsModel.find({ userId });
+  const funds = await getFundsAccount(userId);
 
   const investment = holdings.reduce((total, stock) => {
     return total + Number(stock.avg || 0) * Number(stock.qty || 0);
@@ -235,13 +241,13 @@ const getPortfolioSummary = async () => {
 //   res.send("postions data saved");
 // });
 
-app.get("/allHoldings", async (req, res) => {
-  let allHoldings = await HoldingsModel.find({});
+app.get("/allHoldings", authMiddleware, async (req, res) => {
+  let allHoldings = await HoldingsModel.find({ userId: req.user.id });
   res.json(allHoldings);
 });
 
-app.get("/allPositions", async (req, res) => {
-  const allOrders = await OrdersModel.find({}).sort({ createdAt: 1 });
+app.get("/allPositions",authMiddleware,  async (req, res) => {
+  const allOrders = await OrdersModel.find({ userId: req.user.id }).sort({ createdAt: 1 });
   const positionsMap = new Map();
 
   allOrders.forEach((order) => {
@@ -297,8 +303,9 @@ app.get("/allPositions", async (req, res) => {
   res.json(allPositions);
 });
 
-app.post("/newOrder", async (req, res) => {
+app.post("/newOrder", authMiddleware,  async (req, res) => {
   try {
+    const userId = req.user.id;
     const { name, qty, price, mode } = req.body;
 
     const orderQty = Number(qty);
@@ -309,33 +316,34 @@ app.post("/newOrder", async (req, res) => {
     if (!name || orderQty <= 0 || orderPrice <= 0) {
       return res.status(400).send("Invalid order data");
     }
-  
+
     if (orderMode !== "BUY" && orderMode !== "SELL") {
       return res.status(400).send("Invalid order mode");
     }
-  
-    const funds = await getFundsAccount();
-    const existingHolding = await HoldingsModel.findOne({ name: name });
-  
+
+    const funds = await getFundsAccount(userId);
+    const existingHolding = await HoldingsModel.findOne({ userId, name: name });
+
     if (orderMode === "BUY") {
       if (funds.availableCash < orderValue) {
         return res.status(400).send("Insufficient funds");
       }
-  
+
       if (existingHolding) {
         const oldQty = existingHolding.qty;
         const oldAvg = existingHolding.avg;
-  
+
         const newQty = oldQty + orderQty;
         const newAvg = (oldQty * oldAvg + orderQty * orderPrice) / newQty;
-  
+
         existingHolding.qty = newQty;
         existingHolding.avg = newAvg;
         existingHolding.price = orderPrice;
-  
+
         await existingHolding.save();
       } else {
         const newHolding = new HoldingsModel({
+          userId,
           name: name,
           qty: orderQty,
           avg: orderPrice,
@@ -343,45 +351,46 @@ app.post("/newOrder", async (req, res) => {
           net: "0.00%",
           day: "0.00%",
         });
-  
+
         await newHolding.save();
       }
-  
+
       funds.availableCash = funds.availableCash - orderValue;
       await funds.save();
     }
-  
+
     if (orderMode === "SELL") {
       if (!existingHolding) {
         return res.status(400).send("You do not own this stock");
       }
-  
+
       if (existingHolding.qty < orderQty) {
         return res.status(400).send("Not enough quantity to sell");
       }
-  
+
       existingHolding.qty = existingHolding.qty - orderQty;
       existingHolding.price = orderPrice;
-  
+
       if (existingHolding.qty === 0) {
-        await HoldingsModel.deleteOne({ _id: existingHolding._id });
+        await HoldingsModel.deleteOne({ _id: existingHolding._id, userId });
       } else {
         await existingHolding.save();
       }
-  
+
       funds.availableCash = funds.availableCash + orderValue;
       await funds.save();
     }
-  
+
     const newOrder = new OrdersModel({
+      userId,
       name: name,
       qty: orderQty,
       price: orderPrice,
       mode: orderMode,
     });
-  
+
     await newOrder.save();
-  
+
     res.send("Order saved and holdings updated");
   } catch (error) {
     console.log("Order failed:", error);
@@ -389,42 +398,38 @@ app.post("/newOrder", async (req, res) => {
   }
 });
 
-app.get("/allOrders", async (req, res) => {
-  const allOrders = await OrdersModel.find({}).sort({ createdAt: -1 });
+app.get("/allOrders", authMiddleware, async (req, res) => {
+  const allOrders = await OrdersModel.find({ userId: req.user.id }).sort({ createdAt: -1 });
   res.json(allOrders);
 });
 
-app.get("/portfolioSummary", async (req, res) => {
-  res.json(await getPortfolioSummary());
+app.get("/funds", authMiddleware, async (req, res) => {
+  res.json(await getAccountSummary(req.user.id));
 });
 
-app.get("/funds", async (req, res) => {
-  res.json(await getPortfolioSummary());
-});
-
-app.post("/funds/add", async (req, res) => {
+app.post("/funds/add", authMiddleware, async (req, res) => {
   const amount = Number(req.body.amount);
 
   if (amount <= 0) {
     return res.status(400).send("Invalid amount");
   }
 
-  const funds = await getFundsAccount();
+  const funds = await getFundsAccount(req.user.id);
   funds.availableCash = funds.availableCash + amount;
   funds.openingBalance = funds.openingBalance + amount;
   await funds.save();
 
-  res.json(await getPortfolioSummary());
+  res.json(await getAccountSummary(req.user.id));
 });
 
-app.post("/funds/withdraw", async (req, res) => {
+app.post("/funds/withdraw", authMiddleware, async (req, res) => {
   const amount = Number(req.body.amount);
 
   if (amount <= 0) {
     return res.status(400).send("Invalid amount");
   }
 
-  const funds = await getFundsAccount();
+  const funds = await getFundsAccount(req.user.id);
 
   if (funds.availableCash < amount) {
     return res.status(400).send("Insufficient available cash");
@@ -434,8 +439,82 @@ app.post("/funds/withdraw", async (req, res) => {
   funds.openingBalance = funds.openingBalance - amount;
   await funds.save();
 
-  res.json(await getPortfolioSummary());
+  res.json(await getAccountSummary(req.user.id));
 });
+
+app.get("/me", authMiddleware, async (req, res) => {
+  const user = await UserModel.findById(req.user.id).select("-password");
+
+  if (!user) {
+    return res.status(404).send("User not found");
+  }
+
+  res.json({
+    id: user._id,
+    name: user.name,
+    email: user.email,
+  });
+});
+
+app.post("/signup", async (req, res) => {
+    const { name, email, password } = req.body;
+
+    if (!name || !email || !password) {
+    return res.status(400).send("All fields are required");
+    }
+
+    const existingUser = await UserModel.findOne({ email: email });
+
+    if (existingUser) {
+    return res.status(400).send("User already exists");
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = new UserModel({
+    name: name,
+    email: email,
+    password: hashedPassword,
+    });
+
+      await newUser.save();
+
+    res.send("User registered successfully");
+})
+
+app.post("/login", async (req, res) => {
+      const { email, password } = req.body;
+ if (!email || !password) {
+    return res.status(400).json({ message: "Email and password are required" });
+ }
+
+    const user = await UserModel.findOne({ email: email });
+
+    if (!user) {
+    return res.status(400).json({ message: "Invalid email or password" });
+    }
+
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+
+     if (!isPasswordCorrect) {
+    return res.status(400).json({ message: "Invalid email or password" });
+     }
+
+    const token = jwt.sign({
+        id: user._id,
+  email: user.email,
+    }, process.env.JWT_SECRET, { expiresIn: "1d" })
+
+      res.json({
+    message: "Login successful",
+    token: token,
+    user: {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+    },
+  });
+})
 
 app.listen(PORT, () => {
   console.log("Server running on port 3002");

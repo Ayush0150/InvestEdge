@@ -1,8 +1,8 @@
-import axios from "axios";
 import { useState } from "react";
+import api from "../api/api";
 import "./BuyActionWindow.css";
 
-const BuyActionWindow = ({ stock, onClose }) => {
+const BuyActionWindow = ({ stock, onClose, onOrderPlaced }) => {
   const [stockQuantity, setStockQuantity] = useState(1);
   const [stockPrice, setStockPrice] = useState(stock.price);
 
@@ -10,13 +10,14 @@ const BuyActionWindow = ({ stock, onClose }) => {
 
 const handleBuyClick = async () => {
   try {
-    await axios.post("http://localhost:3002/newOrder", {
+    await api.post("/newOrder", {
       name: stock.name,
       qty: Number(stockQuantity),
       price: Number(stockPrice),
       mode: "BUY",
     });
 
+    onOrderPlaced();
     onClose();
   } catch (error) {
     alert(error.response?.data || "Buy order failed");

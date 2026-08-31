@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../api/api";
 
-const Orders = () => {
+const Orders = ({ refreshKey }) => {
     const [allOrders, setAllOrders] = useState([]);
 
     useEffect(() => {
-        axios.get("http://localhost:3002/allOrders")
+        api.get("/allOrders")
             .then((res) => {
                 setAllOrders(res.data)
             })
-    }, []);
+    }, [refreshKey]);
 
   return (
     <>

@@ -1,9 +1,24 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import api from "../api/api";
+
+const FRONTEND_LOGIN_URL = "http://localhost:5174/login";
 
 const Menu = () => {
   const [selectedMenu, setSelectedMenu] = useState(0);
   const [profileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    api
+      .get("/me")
+      .then((res) => {
+        setUser(res.data);
+      })
+      .catch(() => {
+        setUser(null);
+      });
+  }, []);
 
   const handleMenuClick = (index) => {
     setSelectedMenu(index);
@@ -12,6 +27,20 @@ const Menu = () => {
   const handleProfileClick = () => {
     setIsProfileDropdownOpen(!profileDropdownOpen);
   };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    window.location.href = FRONTEND_LOGIN_URL;
+  };
+
+  const displayName = user?.name || "User";
+  const displayEmail = user?.email || "Not logged in";
+  const initials = displayName
+    .split(" ")
+    .map((word) => word[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
 
   const menuClass = "menu";
   const activeMenuClass = "menu selected ";
@@ -101,11 +130,28 @@ const Menu = () => {
           </li>
         </ul>
         <hr />
-        <div className="profile" onClick={handleProfileClick}>
-          <div className="avatar">ZU</div>
-          <p className="username">USERID</p>
+        <div className="profile-wrapper">
+          <div className="profile" onClick={handleProfileClick}>
+            <div className="avatar">{initials}</div>
+            <p className="username">{displayName}</p>
+          </div>
+
+          {profileDropdownOpen && (
+            <div className="profile-card">
+              <div className="profile-card-header">
+                <div className="avatar profile-card-avatar">{initials}</div>
+                <div>
+                  <h4>{displayName}</h4>
+                  <p>{displayEmail}</p>
+                </div>
               </div>
-               {setIsProfileDropdownOpen}
+
+              <button className="profile-logout-btn" onClick={handleLogout}>
+                Logout
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

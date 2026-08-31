@@ -1,7 +1,7 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
+import api from "../api/api";
 
-const Funds = () => {
+const Funds = ({ refreshKey }) => {
   const [funds, setFunds] = useState({
     availableCash: 0,
     openingBalance: 0,
@@ -12,10 +12,10 @@ const Funds = () => {
   const [amount, setAmount] = useState("");
 
   useEffect(() => {
-    axios.get("http://localhost:3002/funds").then((res) => {
+    api.get("/funds").then((res) => {
       setFunds(res.data);
     });
-  }, []);
+  }, [refreshKey]);
 
   const formatCurrency = (value) => {
     return Number(value || 0).toLocaleString("en-IN", {
@@ -26,7 +26,7 @@ const Funds = () => {
 
   const handleAddFunds = async () => {
     try {
-      const res = await axios.post("http://localhost:3002/funds/add", {
+      const res = await api.post("/funds/add", {
         amount: Number(amount),
       });
 
@@ -39,7 +39,7 @@ const Funds = () => {
 
   const handleWithdrawFunds = async () => {
     try {
-      const res = await axios.post("http://localhost:3002/funds/withdraw", {
+      const res = await api.post("/funds/withdraw", {
         amount: Number(amount),
       });
 

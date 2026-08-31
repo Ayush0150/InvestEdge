@@ -1,7 +1,8 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
+import api from "../api/api";
 
-const Summary = () => {
+const Summary = ({ refreshKey }) => {
+  const [user, setUser] = useState(null);
   const [summary, setSummary] = useState({
     holdingsCount: 0,
     investment: 0,
@@ -14,10 +15,14 @@ const Summary = () => {
   });
 
   useEffect(() => {
-    axios.get("http://localhost:3002/portfolioSummary").then((res) => {
+    api.get("/funds").then((res) => {
       setSummary(res.data);
     });
-  }, []);
+
+    api.get("/me").then((res) => {
+      setUser(res.data);
+    });
+  }, [refreshKey]);
 
   const formatCurrency = (value) => {
     return Number(value || 0).toLocaleString("en-IN", {
@@ -38,7 +43,7 @@ const Summary = () => {
   return (
     <>
       <div className="username">
-        <h6>Hi, User!</h6>
+        <h6>Hi, {user?.name || "User"}!</h6>
         <hr className="divider" />
       </div>
 

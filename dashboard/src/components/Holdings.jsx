@@ -1,14 +1,14 @@
-import axios from "axios";
 import { useEffect, useMemo, useState } from "react";
+import api from "../api/api";
 
-const Holdings = () => {
+const Holdings = ({ refreshKey }) => {
   const [allHoldings, setAllHoldings] = useState([]);
 
   useEffect(() => {
-    axios.get("http://localhost:3002/allHoldings").then((res) => {
+    api.get("/allHoldings").then((res) => {
       setAllHoldings(res.data);
     });
-  }, []);
+  }, [refreshKey]);
 
   const totals = useMemo(() => {
     const investment = allHoldings.reduce((total, stock) => {

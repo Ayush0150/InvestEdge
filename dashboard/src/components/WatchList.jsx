@@ -13,10 +13,21 @@ import { watchlist } from "../data/data";
 import BuyActionWindow from "./BuyActionWindow";
 import SellActionWindow from "./SellActionWindow";
 
-const WatchList = () => {
+const WatchList = ({ onOrderPlaced }) => {
   const [isBuyWindowOpen, setIsBuyWindowOpen] = useState(false);
   const [isSellWindowOpen, setIsSellWindowOpen] = useState(false);
   const [selectedStock, setSelectedStock] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filteredWatchlist = watchlist.filter((stock) => {
+    const query = searchTerm.trim().toLowerCase();
+
+    if (!query) {
+      return true;
+    }
+
+    return stock.name.toLowerCase().includes(query);
+  });
 
   const handleOpenBuyWindow = (stock) => {
     setSelectedStock(stock);
@@ -47,14 +58,18 @@ const WatchList = () => {
           type="text"
           name="search"
           id="search"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
           placeholder="Search eg:infy, bse, nifty fut weekly, gold mcx"
           className="search"
         />
-        <span className="counts"> {watchlist.length} / 50</span>
+        <span className="counts">
+          {filteredWatchlist.length} / 50
+        </span>
       </div>
 
       <ul className="list">
-        {watchlist.map((stock, index) => {
+        {filteredWatchlist.map((stock, index) => {
           return (
             <WatchListItem
               stock={stock}
@@ -66,14 +81,23 @@ const WatchList = () => {
         })}
       </ul>
 
+      {filteredWatchlist.length === 0 && (
+        <div className="watchlist-empty">No stocks found</div>
+      )}
+
       {isBuyWindowOpen && selectedStock && (
-        <BuyActionWindow stock={selectedStock} onClose={handleCloseBuyWindow} />
+        <BuyActionWindow
+          stock={selectedStock}
+          onClose={handleCloseBuyWindow}
+          onOrderPlaced={onOrderPlaced}
+        />
       )}
 
       {isSellWindowOpen && selectedStock && (
         <SellActionWindow
           stock={selectedStock}
           onClose={handleCloseSellWindow}
+          onOrderPlaced={onOrderPlaced}
         />
       )}
     </div>
