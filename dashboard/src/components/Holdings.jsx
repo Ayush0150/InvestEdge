@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import api from "../api/api";
+import VerticalGraph from "./VerticalGraph";
 
 const Holdings = ({ refreshKey }) => {
   const [allHoldings, setAllHoldings] = useState([]);
@@ -32,6 +33,39 @@ const Holdings = ({ refreshKey }) => {
     });
   };
 
+  // const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+
+  // export const data = {
+  //   labels,
+  //   datasets: [
+  //     {
+  //       label: 'Dataset 1',
+  //       data: labels.map(() => faker.datatype.number({ min: 0, max: 1000 })),
+  //       backgroundColor: 'rgba(255, 99, 132, 0.5)',
+  //     },
+  //     {
+  //       label: 'Dataset 2',
+  //       data: labels.map(() => faker.datatype.number({ min: 0, max: 1000 })),
+  //       backgroundColor: 'rgba(53, 162, 235, 0.5)',
+  //     },
+  //   ],
+  // };
+
+  const labels = allHoldings.map((stock) => stock.name);
+
+  const data = {
+    labels,
+    datasets: [
+      {
+        label: "Current Value",
+        data: allHoldings.map(
+          (stock) => Number(stock.price || 0) * Number(stock.qty || 0)
+        ),
+        backgroundColor: "rgba(255, 99, 132, 0.5)",
+      },
+    ],
+  };
+
   return (
     <>
       <h3 className="title">Holdings ({allHoldings.length})</h3>
@@ -57,7 +91,7 @@ const Holdings = ({ refreshKey }) => {
               const isProfit = curValue - stock.avg * stock.qty >= 0;
 
               const profClass = isProfit ? "profit" : "loss";
-              const dayClass = stock.isLoss ? "loss" : "profit";
+              const dayClass = String(stock.day).trim().startsWith("-") ? "loss" : "profit";
 
               return (
                 <tr key={index}>
@@ -99,6 +133,7 @@ const Holdings = ({ refreshKey }) => {
           <p>P&L</p>
         </div>
       </div>
+      <VerticalGraph data={data} />
     </>
   );
 };
