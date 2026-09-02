@@ -1,0 +1,295 @@
+body {
+  margin: 0;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
+    "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family:
+    source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+
+.nav-link {
+    margin-left: 40px;
+}
+
+.product-hero {
+  padding: 72px 16px 48px;
+  border-bottom: 1px solid #eee;
+}
+
+.product-hero h1,
+.product-copy h2,
+.product-universe h2 {
+  color: #424242;
+  font-weight: 500;
+}
+
+.product-hero h1 {
+  font-size: 44px;
+}
+
+.product-hero h4 {
+  font-size: 20px;
+  font-weight: 400;
+}
+
+.product-section {
+  padding: 70px 16px;
+}
+
+.product-row {
+  --bs-gutter-x: 64px;
+  --bs-gutter-y: 44px;
+  min-height: 360px;
+}
+
+.product-media,
+.product-copy-column {
+  display: flex;
+  align-items: center;
+}
+
+.product-media {
+  justify-content: center;
+}
+
+.product-copy-column {
+  justify-content: center;
+}
+
+.product-image {
+  width: 100%;
+  max-width: 520px;
+  max-height: 330px;
+  object-fit: contain;
+}
+
+.product-copy {
+  width: 100%;
+  max-width: 500px;
+}
+
+.product-copy h2 {
+  font-size: 32px;
+  margin-bottom: 18px;
+}
+
+.product-copy p {
+  font-size: 17px;
+  line-height: 1.8;
+  margin-bottom: 24px;
+}
+
+.product-links a {
+  color: #387ed1;
+  font-weight: 500;
+}
+
+.product-links a:hover {
+  color: #222;
+}
+
+.product-badges {
+  margin-top: 26px;
+}
+
+.product-badges img {
+  height: 40px;
+}
+
+.product-universe {
+  /* background-color: #fbfbfb; */
+  padding: 80px 16px;
+  border-top: 1px solid #eee;
+}
+
+.product-universe h2 {
+  font-size: 32px;
+  margin-bottom: 16px;
+}
+
+.product-universe > .container > .row:first-child p {
+  font-size: 17px;
+  line-height: 1.8;
+}
+
+.universe-item {
+  background-color: #fff;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  padding: 28px 24px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.universe-item:hover {
+  border-color: #d7e5f5;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.06);
+  transform: translateY(-3px);
+}
+
+.universe-item img {
+  max-width: 150px;
+  height: 42px;
+  object-fit: contain;
+  margin-bottom: 22px;
+}
+
+.universe-item h3 {
+  color: #424242;
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 12px;
+}
+
+.universe-item p {
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+@media (max-width: 991px) {
+  .nav-link {
+    margin-left: 0;
+  }
+
+  .product-hero {
+    padding-top: 48px;
+  }
+
+  .product-hero h1 {
+    font-size: 36px;
+  }
+
+  .product-section {
+    padding: 52px 16px;
+  }
+
+  .product-row {
+    --bs-gutter-y: 32px;
+    min-height: auto;
+  }
+
+  .product-copy {
+    max-width: 100%;
+    text-align: center;
+  }
+
+  .product-media,
+  .product-copy-column {
+    justify-content: center;
+  }
+
+  .product-links,
+  .product-badges {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 576px) {
+  .product-hero h1 {
+    font-size: 32px;
+  }
+
+  .product-hero h4,
+  .product-copy p,
+  .product-universe > .container > .row:first-child p {
+    font-size: 16px;
+  }
+
+  .product-copy h2,
+  .product-universe h2 {
+    font-size: 28px;
+  }
+
+  .product-image {
+    max-width: 100%;
+  }
+}
+#supportHero {
+  background-color: rgb(56, 126, 209);
+  color: white;
+  padding-bottom: 40px;
+}
+
+#supportHero a {
+  color: white;
+}
+
+#supportWrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 150px;
+  padding: 20px 0;
+}
+
+#supportWrapper h4 {
+  margin: 0;
+}
+
+#supportWrapper a {
+  font-size: 16px;
+}
+
+#supportHero input {
+  padding: 15px 50px;
+  width: 92%;
+  font-size: 15.9px;
+  border-radius: 6px;
+  border: none;
+  outline: none;
+}
+
+#supportHero input::placeholder {
+  color: #777;
+}
+
+#searchRow {
+  padding-left: 135px;
+  padding-right: 60px;
+}
+
+#searchRow h1 {
+  line-height: 1.4;
+}
+
+#searchRow h3 {
+  margin-bottom: 25px;
+}
+
+#searchRow ol {
+  padding-left: 30px;
+}
+
+#searchRow li {
+  margin-bottom: 20px;
+}
+
+@media (max-width: 992px) {
+  #supportWrapper {
+    margin: 0 60px;
+  }
+
+  #searchRow {
+    padding-left: 60px;
+    padding-right: 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  #supportWrapper {
+    margin: 0 25px;
+  }
+
+  #searchRow {
+    padding-left: 25px;
+    padding-right: 25px;
+  }
+
+  #supportHero input {
+    width: 100%;
+  }
+}

@@ -1,0 +1,54 @@
+import Hero from "./Hero";
+import LeftSection from "./LeftSection";
+import RightSection from "./RightSection";
+import Universe from "./Universe";
+
+function ProductPage() {
+  return (
+    <>
+      <Hero />
+      <LeftSection
+        imageURL="/assets/images/homeHero.png"
+        productName="TradeDesk"
+        productDescription="Our fast flagship trading platform with market data, clean order flows, an elegant UI, and more. Enjoy the TradeDesk experience seamlessly on your Android and iOS devices."
+        tryDemo="#"
+        learnMore="#"
+        googlePlay="#"
+        appStore="#"
+      />
+      <RightSection
+        imageURL="/assets/images/ecosystem.png"
+        productName="Insight Console"
+        productDescription="The central dashboard for your InvestEdge account. Gain insights into your trades and investments with in-depth reports and visualisations."
+        learnMore="#"
+      />
+      <LeftSection
+        imageURL="/assets/images/pricingMF.svg"
+        productName="FundHub"
+        productDescription="Buy direct mutual funds online, commission-free, delivered directly to your Demat account. Enjoy the investment experience on your Android and iOS devices."
+        tryDemo="#"
+        learnMore="#"
+        googlePlay="#"
+        appStore="#"
+      />
+      <RightSection
+        imageURL="/assets/images/landing.svg"
+        productName="InvestEdge Connect API"
+        productDescription="Build powerful trading platforms and experiences with our super simple HTTP/JSON APIs. If you are a startup, build your investment app and showcase it to our clientbase."
+        learnMore="#"
+      />
+      <LeftSection
+        imageURL="/assets/images/varsity-products.svg"
+        productName="LearnEdge mobile"
+        productDescription="An easy to grasp, collection of stock market lessons with in-depth coverage and illustrations. Content is broken down into bite-size cards to help you learn on the go."
+        tryDemo="#"
+        learnMore="#"
+        googlePlay="#"
+        appStore="#"
+      />
+      <Universe />
+    </>
+  );
+}
+
+export default ProductPage;
