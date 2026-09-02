@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3002";
+
 function Signup() {
   const navigate = useNavigate();
 
@@ -21,7 +23,7 @@ function Signup() {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:3002/signup", {
+      const response = await fetch(`${API_URL}/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -38,7 +40,7 @@ function Signup() {
 
       alert("Signup successful. Please login.");
       navigate("/login");
-    } catch  {
+    } catch {
       alert("Something went wrong during signup");
     }
   };

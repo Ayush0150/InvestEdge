@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3002";
+const DASHBOARD_URL =
+  import.meta.env.VITE_DASHBOARD_URL || "http://localhost:5173";
+
 function Login() {
   const [formData, setFormData] = useState({
     email: "",
@@ -18,7 +22,7 @@ function Login() {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:3002/login", {
+      const response = await fetch(`${API_URL}/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -41,7 +45,7 @@ function Login() {
 
       alert("Login successful");
 
-      window.location.href = `http://localhost:5173?token=${data.token}`;
+      window.location.href = `${DASHBOARD_URL}?token=${data.token}`;
     } catch (error) {
       alert(error.message || "Something went wrong during login");
     }
