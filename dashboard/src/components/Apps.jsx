@@ -1,19 +1,19 @@
 const connectedApps = [
   {
-    name: "Console",
-    logo: "/images/apps/console-logo.png",
+    name: "Insight Console",
+    logo: "/images/investedge-logo.svg",
     description: "Track portfolio reports, tax P&L, tradebook, and account statements.",
     status: "Connected",
   },
   {
-    name: "Coin",
-    logo: "/images/apps/coin-logo.png",
+    name: "FundHub",
+    logo: "/images/investedge-logo.svg",
     description: "Explore direct mutual funds and long-term SIP investments.",
     status: "Available",
   },
   {
-    name: "Varsity",
-    logo: "/images/apps/varsity-logo.png",
+    name: "LearnEdge",
+    logo: "/images/investedge-logo.svg",
     description: "Learn market basics, trading concepts, and investing modules.",
     status: "Learning",
   },

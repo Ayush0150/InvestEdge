@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../api/api";
 
-const FRONTEND_LOGIN_URL = "http://localhost:5174/login";
+const FRONTEND_LOGIN_URL = `${import.meta.env.VITE_FRONTEND_URL || "http://localhost:5174"}/login`;
 
 const Menu = () => {
   const [selectedMenu, setSelectedMenu] = useState(0);
@@ -47,7 +47,11 @@ const Menu = () => {
 
   return (
     <div className="menu-container">
-      <img src="/images/logo.png" style={{ width: "50px" }} />
+      <img
+        src="/images/investedge-logo.svg"
+        alt="InvestEdge"
+        style={{ width: "170px" }}
+      />
       <div className="menus">
         <ul>
           <li>

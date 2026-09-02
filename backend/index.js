@@ -8,17 +8,18 @@ import OrdersModel from "./model/OrdersModel.js";
 
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import UserModel from "./model/UserModel.js";
 import authMiddleware from "./middleware/authMiddleware.js";
+import UserModel from "./model/UserModel.js";
 
 dotenv.config();
 const PORT = process.env.PORT || 3002;
 const uri = process.env.MONGO_URL;
+const frontendUrl = process.env.FRONTEND_URL;
 
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+app.use(cors(frontendUrl ? { origin: frontendUrl } : undefined));
 
 mongoose
   .connect(uri)
@@ -246,8 +247,10 @@ app.get("/allHoldings", authMiddleware, async (req, res) => {
   res.json(allHoldings);
 });
 
-app.get("/allPositions",authMiddleware,  async (req, res) => {
-  const allOrders = await OrdersModel.find({ userId: req.user.id }).sort({ createdAt: 1 });
+app.get("/allPositions", authMiddleware, async (req, res) => {
+  const allOrders = await OrdersModel.find({ userId: req.user.id }).sort({
+    createdAt: 1,
+  });
   const positionsMap = new Map();
 
   allOrders.forEach((order) => {
@@ -284,7 +287,10 @@ app.get("/allPositions",authMiddleware,  async (req, res) => {
   const allPositions = Array.from(positionsMap.values())
     .filter((position) => position.qty !== 0)
     .map((position) => {
-      const avg = position.buyQty === 0 ? position.price : position.buyValue / position.buyQty;
+      const avg =
+        position.buyQty === 0
+          ? position.price
+          : position.buyValue / position.buyQty;
       const pnl = (position.price - avg) * position.qty;
       const day = avg === 0 ? 0 : ((position.price - avg) / avg) * 100;
 
@@ -303,7 +309,7 @@ app.get("/allPositions",authMiddleware,  async (req, res) => {
   res.json(allPositions);
 });
 
-app.post("/newOrder", authMiddleware,  async (req, res) => {
+app.post("/newOrder", authMiddleware, async (req, res) => {
   try {
     const userId = req.user.id;
     const { name, qty, price, mode } = req.body;
@@ -399,7 +405,9 @@ app.post("/newOrder", authMiddleware,  async (req, res) => {
 });
 
 app.get("/allOrders", authMiddleware, async (req, res) => {
-  const allOrders = await OrdersModel.find({ userId: req.user.id }).sort({ createdAt: -1 });
+  const allOrders = await OrdersModel.find({ userId: req.user.id }).sort({
+    createdAt: -1,
+  });
   res.json(allOrders);
 });
 
@@ -457,55 +465,59 @@ app.get("/me", authMiddleware, async (req, res) => {
 });
 
 app.post("/signup", async (req, res) => {
-    const { name, email, password } = req.body;
+  const { name, email, password } = req.body;
 
-    if (!name || !email || !password) {
+  if (!name || !email || !password) {
     return res.status(400).send("All fields are required");
-    }
+  }
 
-    const existingUser = await UserModel.findOne({ email: email });
+  const existingUser = await UserModel.findOne({ email: email });
 
-    if (existingUser) {
+  if (existingUser) {
     return res.status(400).send("User already exists");
-    }
+  }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+  const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newUser = new UserModel({
+  const newUser = new UserModel({
     name: name,
     email: email,
     password: hashedPassword,
-    });
+  });
 
-      await newUser.save();
+  await newUser.save();
 
-    res.send("User registered successfully");
-})
+  res.send("User registered successfully");
+});
 
 app.post("/login", async (req, res) => {
-      const { email, password } = req.body;
- if (!email || !password) {
+  const { email, password } = req.body;
+  if (!email || !password) {
     return res.status(400).json({ message: "Email and password are required" });
- }
+  }
 
-    const user = await UserModel.findOne({ email: email });
+  const user = await UserModel.findOne({ email: email });
 
-    if (!user) {
+  if (!user) {
     return res.status(400).json({ message: "Invalid email or password" });
-    }
+  }
 
-    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+  const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
-     if (!isPasswordCorrect) {
+  if (!isPasswordCorrect) {
     return res.status(400).json({ message: "Invalid email or password" });
-     }
+  }
 
-    const token = jwt.sign({
-        id: user._id,
-  email: user.email,
-    }, process.env.JWT_SECRET, { expiresIn: "1d" })
+  const token = jwt.sign(
+    {
+      id: user._id,
+      email: user.email,
+    },
+    process.env.JWT_SECRET,
+    { expiresIn: "1d" }
+  );
 
-      res.json({
+  res.json({
     message: "Login successful",
     token: token,
     user: {
@@ -514,7 +526,7 @@ app.post("/login", async (req, res) => {
       email: user.email,
     },
   });
-})
+});
 
 app.listen(PORT, () => {
   console.log("Server running on port 3002");
