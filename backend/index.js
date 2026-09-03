@@ -14,12 +14,23 @@ import UserModel from "./model/UserModel.js";
 dotenv.config();
 const PORT = process.env.PORT || 3002;
 const uri = process.env.MONGO_URL;
-const frontendUrl = process.env.FRONTEND_URL;
+const allowedOrigins = (process.env.FRONTEND_URL || "")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
 
 const app = express();
 
 app.use(express.json());
-app.use(cors(frontendUrl ? { origin: frontendUrl } : undefined));
+app.use(
+  cors(
+    allowedOrigins.length
+      ? {
+          origin: allowedOrigins,
+        }
+      : undefined
+  )
+);
 
 mongoose
   .connect(uri)
@@ -529,5 +540,5 @@ app.post("/login", async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log("Server running on port 3002");
+  console.log(`Server running on port ${PORT}`);
 });
