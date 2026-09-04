@@ -15,6 +15,17 @@ function Navbar() {
           />
         </Link>
 
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-label="Toggle navigation"
+        >
+          <span className="navbar-toggler-icon"></span>
+        </button>
+
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul
             className="navbar-nav ms-auto mb-2 mb-lg-0"
@@ -28,12 +39,12 @@ function Navbar() {
               >
                 Signup
               </Link>
-                      </li>
-                      <li className="nav-item">
-  <Link className="nav-link active text-muted" to="/login">
-    Login
-  </Link>
-</li>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link active text-muted" to="/login">
+                Login
+              </Link>
+            </li>
             <li className="nav-item">
               <Link className="nav-link active text-muted" to="/about">
                 About

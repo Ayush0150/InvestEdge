@@ -13,7 +13,7 @@ code {
 }
 
 .nav-link {
-    margin-left: 40px;
+  margin-left: 40px;
 }
 
 .product-hero {
@@ -122,7 +122,10 @@ code {
   border: 1px solid #eee;
   border-radius: 8px;
   padding: 28px 24px;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
 }
 
 .universe-item:hover {
@@ -189,6 +192,24 @@ code {
 }
 
 @media (max-width: 576px) {
+  .container {
+    max-width: 100%;
+  }
+
+  .container img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .container .row > .col-6 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+
+  .container a.btn {
+    width: min(100%, 220px) !important;
+  }
+
   .product-hero h1 {
     font-size: 32px;
   }
@@ -235,6 +256,7 @@ code {
 }
 
 #supportHero input {
+  box-sizing: border-box;
   padding: 15px 50px;
   width: 92%;
   font-size: 15.9px;
@@ -281,7 +303,11 @@ code {
 
 @media (max-width: 768px) {
   #supportWrapper {
-    margin: 0 25px;
+    margin: 0;
+    padding: 20px 16px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
   }
 
   #searchRow {
@@ -291,5 +317,6 @@ code {
 
   #supportHero input {
     width: 100%;
+    padding-inline: 18px;
   }
 }

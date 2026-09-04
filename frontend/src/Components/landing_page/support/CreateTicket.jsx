@@ -1,8 +1,10 @@
 function CreateTicket() {
-    return (
-       <div className="container mb-5 p-5">
+  return (
+    <div className="container mb-5 p-3 p-md-5">
       <div className="row">
-        <h1 className="fs-2 m-3 mb-5">To create a ticket, select a relevant topic</h1>
+        <h1 className="fs-2 m-3 mb-5">
+          To create a ticket, select a relevant topic
+        </h1>
 
         <div className="col-12 col-md-6 col-lg-4 px-4 py-3">
           <h4 className="text-muted mb-5">
@@ -191,7 +193,7 @@ function CreateTicket() {
         </div>
       </div>
     </div>
-     );
+  );
 }
 
 export default CreateTicket;

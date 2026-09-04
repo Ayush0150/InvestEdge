@@ -5,10 +5,8 @@ function Footer() {
       className="border-top"
     >
       <div className="container mt-4">
-
         <div className="row mt-3">
-
-          <div className="col">
+          <div className="col-12 col-sm-6 col-lg">
             <img
               src="/assets/images/investedge-logo.svg"
               alt="InvestEdge"
@@ -34,89 +32,185 @@ function Footer() {
             </div>
           </div>
 
-          <div className="col">
+          <div className="col-12 col-sm-6 col-lg">
             <p>Company</p>
 
-            <a href="#" className="d-block text-muted text-decoration-none mb-2" style={{ fontSize: 15 }}>
+            <a
+              href="#"
+              className="d-block text-muted text-decoration-none mb-2"
+              style={{ fontSize: 15 }}
+            >
               About
             </a>
-            <a href="#" className="d-block text-muted text-decoration-none mb-2" style={{ fontSize: 15 }}>
+            <a
+              href="#"
+              className="d-block text-muted text-decoration-none mb-2"
+              style={{ fontSize: 15 }}
+            >
               Philosophy
             </a>
-            <a href="#" className="d-block text-muted text-decoration-none mb-2" style={{ fontSize: 15 }}>
+            <a
+              href="#"
+              className="d-block text-muted text-decoration-none mb-2"
+              style={{ fontSize: 15 }}
+            >
               Press & media
             </a>
-            <a href="#" className="d-block text-muted text-decoration-none mb-2" style={{ fontSize: 15 }}>
+            <a
+              href="#"
+              className="d-block text-muted text-decoration-none mb-2"
+              style={{ fontSize: 15 }}
+            >
               Careers
             </a>
-            <a href="#" className="d-block text-muted text-decoration-none mb-2" style={{ fontSize: 15 }}>
+            <a
+              href="#"
+              className="d-block text-muted text-decoration-none mb-2"
+              style={{ fontSize: 15 }}
+            >
               InvestEdge Cares
             </a>
-            <a href="#" className="d-block text-muted text-decoration-none mb-2" style={{ fontSize: 15 }}>
+            <a
+              href="#"
+              className="d-block text-muted text-decoration-none mb-2"
+              style={{ fontSize: 15 }}
+            >
               InvestEdge Labs
             </a>
-            <a href="#" className="d-block text-muted text-decoration-none mb-2" style={{ fontSize: 15 }}>
+            <a
+              href="#"
+              className="d-block text-muted text-decoration-none mb-2"
+              style={{ fontSize: 15 }}
+            >
               Open source
             </a>
-            <a href="#" className="d-block text-muted text-decoration-none mb-2" style={{ fontSize: 15 }}>
+            <a
+              href="#"
+              className="d-block text-muted text-decoration-none mb-2"
+              style={{ fontSize: 15 }}
+            >
               Referral program
             </a>
           </div>
 
-          <div className="col">
+          <div className="col-12 col-sm-6 col-lg">
             <p>Support</p>
 
-            <a href="#" className="d-block text-muted text-decoration-none mb-2" style={{ fontSize: 15 }}>
+            <a
+              href="#"
+              className="d-block text-muted text-decoration-none mb-2"
+              style={{ fontSize: 15 }}
+            >
               Contact us
             </a>
-            <a href="#" className="d-block text-muted text-decoration-none mb-2" style={{ fontSize: 15 }}>
+            <a
+              href="#"
+              className="d-block text-muted text-decoration-none mb-2"
+              style={{ fontSize: 15 }}
+            >
               Support portal
             </a>
-            <a href="#" className="d-block text-muted text-decoration-none mb-2" style={{ fontSize: 15 }}>
+            <a
+              href="#"
+              className="d-block text-muted text-decoration-none mb-2"
+              style={{ fontSize: 15 }}
+            >
               How to file a complaint?
             </a>
-            <a href="#" className="d-block text-muted text-decoration-none mb-2" style={{ fontSize: 15 }}>
+            <a
+              href="#"
+              className="d-block text-muted text-decoration-none mb-2"
+              style={{ fontSize: 15 }}
+            >
               Status of your complaints
             </a>
-            <a href="#" className="d-block text-muted text-decoration-none mb-2" style={{ fontSize: 15 }}>
+            <a
+              href="#"
+              className="d-block text-muted text-decoration-none mb-2"
+              style={{ fontSize: 15 }}
+            >
               Bulletin
             </a>
-            <a href="#" className="d-block text-muted text-decoration-none mb-2" style={{ fontSize: 15 }}>
+            <a
+              href="#"
+              className="d-block text-muted text-decoration-none mb-2"
+              style={{ fontSize: 15 }}
+            >
               Circular
             </a>
-            <a href="#" className="d-block text-muted text-decoration-none mb-2" style={{ fontSize: 15 }}>
+            <a
+              href="#"
+              className="d-block text-muted text-decoration-none mb-2"
+              style={{ fontSize: 15 }}
+            >
               InvestEdge blog
             </a>
-            <a href="#" className="d-block text-muted text-decoration-none mb-2" style={{ fontSize: 15 }}>
+            <a
+              href="#"
+              className="d-block text-muted text-decoration-none mb-2"
+              style={{ fontSize: 15 }}
+            >
               Downloads
             </a>
           </div>
 
-          <div className="col">
+          <div className="col-12 col-sm-6 col-lg">
             <p>Account</p>
 
-            <a href="#" className="d-block text-muted text-decoration-none mb-2" style={{ fontSize: 15 }}>
+            <a
+              href="#"
+              className="d-block text-muted text-decoration-none mb-2"
+              style={{ fontSize: 15 }}
+            >
               Open demat account
             </a>
-            <a href="#" className="d-block text-muted text-decoration-none mb-2" style={{ fontSize: 15 }}>
+            <a
+              href="#"
+              className="d-block text-muted text-decoration-none mb-2"
+              style={{ fontSize: 15 }}
+            >
               Minor demat account
             </a>
-            <a href="#" className="d-block text-muted text-decoration-none mb-2" style={{ fontSize: 15 }}>
+            <a
+              href="#"
+              className="d-block text-muted text-decoration-none mb-2"
+              style={{ fontSize: 15 }}
+            >
               NRI demat account
             </a>
-            <a href="#" className="d-block text-muted text-decoration-none mb-2" style={{ fontSize: 15 }}>
+            <a
+              href="#"
+              className="d-block text-muted text-decoration-none mb-2"
+              style={{ fontSize: 15 }}
+            >
               HUF demat account
             </a>
-            <a href="#" className="d-block text-muted text-decoration-none mb-2" style={{ fontSize: 15 }}>
+            <a
+              href="#"
+              className="d-block text-muted text-decoration-none mb-2"
+              style={{ fontSize: 15 }}
+            >
               Commodity
             </a>
-            <a href="#" className="d-block text-muted text-decoration-none mb-2" style={{ fontSize: 15 }}>
+            <a
+              href="#"
+              className="d-block text-muted text-decoration-none mb-2"
+              style={{ fontSize: 15 }}
+            >
               Dematerialisation
             </a>
-            <a href="#" className="d-block text-muted text-decoration-none mb-2" style={{ fontSize: 15 }}>
+            <a
+              href="#"
+              className="d-block text-muted text-decoration-none mb-2"
+              style={{ fontSize: 15 }}
+            >
               Fund transfer
             </a>
-            <a href="#" className="d-block text-muted text-decoration-none mb-2" style={{ fontSize: 15 }}>
+            <a
+              href="#"
+              className="d-block text-muted text-decoration-none mb-2"
+              style={{ fontSize: 15 }}
+            >
               MTF
             </a>
           </div>
@@ -134,9 +228,9 @@ function Footer() {
         >
           <p>
             InvestEdge is a full-stack trading platform project built for
-            portfolio tracking, order placement, funds management, and
-            dashboard analytics. This application is intended for learning,
-            demonstration, and resume portfolio use.
+            portfolio tracking, order placement, funds management, and dashboard
+            analytics. This application is intended for learning, demonstration,
+            and resume portfolio use.
           </p>
 
           <p>
@@ -164,15 +258,15 @@ function Footer() {
 
           <p>
             Dear Investor, if you are subscribing to an IPO, there is no need to
-            issue a cheque. Please write the bank account number and sign the IPO
-            application form to authorize your bank to make payment in case of
-            allotment. In case of non allotment the funds will remain in your
+            issue a cheque. Please write the bank account number and sign the
+            IPO application form to authorize your bank to make payment in case
+            of allotment. In case of non allotment the funds will remain in your
             bank account.
           </p>
 
           <p>
-            If you find anyone misusing the InvestEdge name or offering
-            services on behalf of this project, please create a ticket here.
+            If you find anyone misusing the InvestEdge name or offering services
+            on behalf of this project, please create a ticket here.
           </p>
 
           <div className="text-center mt-3">

@@ -1230,3 +1230,149 @@ hr {
 .down {
   color: red;
 }
+
+@media (max-width: 768px) {
+  .topbar-container {
+    height: auto;
+    min-height: 76px;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .indices-container,
+  .menu-container {
+    flex-basis: auto;
+    width: 100%;
+  }
+
+  .indices-container {
+    min-height: 48px;
+    padding: 8px 14px;
+    border-right: 0;
+    border-bottom: 1px solid rgb(224, 224, 224);
+  }
+
+  .menu-container {
+    min-height: 64px;
+    padding: 8px 14px;
+  }
+
+  .menu-container > img {
+    width: min(140px, 42vw) !important;
+  }
+
+  .menus {
+    max-width: calc(100% - 150px);
+    overflow-x: auto;
+  }
+
+  .menus ul {
+    display: flex;
+    align-items: center;
+    width: max-content;
+    padding-left: 10px;
+    margin-bottom: 0;
+  }
+
+  .menus li {
+    margin-right: 18px;
+  }
+
+  .menus li:last-child {
+    margin-right: 0;
+  }
+
+  .dashboard-container {
+    height: auto;
+    min-height: 0;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .watchlist-container,
+  .content {
+    flex-basis: auto;
+    width: 100%;
+    height: auto;
+  }
+
+  .watchlist-container {
+    max-height: 52vh;
+    overflow-y: auto;
+  }
+
+  .content {
+    min-height: 0;
+    padding: 24px 16px 36px;
+    overflow: visible;
+  }
+
+  .watchlist-number {
+    position: sticky;
+    bottom: 0;
+    width: 100%;
+    height: auto;
+    min-height: 52px;
+    padding: 8px 12px;
+  }
+
+  .watchlist-number ul {
+    padding-left: 0;
+    margin: 0;
+  }
+
+  .watchlist-number ul li {
+    padding: 8px 12px;
+  }
+
+  .order-table {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .order-table table {
+    min-width: 620px;
+  }
+
+  .row {
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .row .col,
+  .data {
+    width: 100%;
+    flex-basis: 100%;
+  }
+
+  .data {
+    justify-content: space-between;
+  }
+
+  .data .second p {
+    white-space: normal;
+  }
+
+  .funds-metrics {
+    max-width: none;
+    grid-template-columns: 1fr;
+  }
+
+  .funds-actions {
+    width: 100%;
+  }
+
+  .fund-input {
+    width: 100%;
+  }
+
+  .funds-actions .btn {
+    flex: 1;
+    margin: 0;
+  }
+
+  .profile-card {
+    right: -8px;
+    width: min(260px, calc(100vw - 24px));
+  }
+}
