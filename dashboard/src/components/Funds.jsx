@@ -10,6 +10,7 @@ const Funds = ({ refreshKey }) => {
     accountValue: 0,
   });
   const [amount, setAmount] = useState("");
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     api.get("/funds").then((res) => {
@@ -25,6 +26,7 @@ const Funds = ({ refreshKey }) => {
   };
 
   const handleAddFunds = async () => {
+    setMessage("");
     try {
       const res = await api.post("/funds/add", {
         amount: Number(amount),
@@ -33,11 +35,12 @@ const Funds = ({ refreshKey }) => {
       setFunds(res.data);
       setAmount("");
     } catch (error) {
-      alert(error.response?.data || "Could not add funds");
+      setMessage(error.response?.data || "Could not add funds");
     }
   };
 
   const handleWithdrawFunds = async () => {
+    setMessage("");
     try {
       const res = await api.post("/funds/withdraw", {
         amount: Number(amount),
@@ -46,7 +49,7 @@ const Funds = ({ refreshKey }) => {
       setFunds(res.data);
       setAmount("");
     } catch (error) {
-      alert(error.response?.data || "Could not withdraw funds");
+      setMessage(error.response?.data || "Could not withdraw funds");
     }
   };
 
@@ -75,6 +78,9 @@ const Funds = ({ refreshKey }) => {
           </button>
         </div>
       </div>
+      {message && (
+        <div className="flash-message flash-message-error">{message}</div>
+      )}
 
       <div className="funds-metrics">
         <div className="fund-metric fund-metric-primary">

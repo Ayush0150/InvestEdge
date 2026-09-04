@@ -5,30 +5,34 @@ import "./BuyActionWindow.css";
 const BuyActionWindow = ({ stock, onClose, onOrderPlaced }) => {
   const [stockQuantity, setStockQuantity] = useState(1);
   const [stockPrice, setStockPrice] = useState(stock.price);
+  const [message, setMessage] = useState("");
 
   const totalAmount = Number(stockQuantity) * Number(stockPrice);
 
-const handleBuyClick = async () => {
-  try {
-    await api.post("/newOrder", {
-      name: stock.name,
-      qty: Number(stockQuantity),
-      price: Number(stockPrice),
-      mode: "BUY",
-    });
+  const handleBuyClick = async () => {
+    setMessage("");
+    try {
+      await api.post("/newOrder", {
+        name: stock.name,
+        qty: Number(stockQuantity),
+        price: Number(stockPrice),
+        mode: "BUY",
+      });
 
-    onOrderPlaced();
-    onClose();
-  } catch (error) {
-    alert(error.response?.data || "Buy order failed");
-  }
-};
-    return (
+      onOrderPlaced();
+      onClose();
+    } catch (error) {
+      setMessage(error.response?.data || "Buy order failed");
+    }
+  };
+  return (
     <div className="buy-window">
       <div className="buy-window-header">
         <h3>Buy {stock.name}</h3>
-
       </div>
+      {message && (
+        <div className="flash-message flash-message-error">{message}</div>
+      )}
 
       <div className="buy-window-inputs">
         <fieldset>
@@ -43,7 +47,13 @@ const handleBuyClick = async () => {
 
         <fieldset>
           <legend>Price</legend>
-          <input type="number" min="0" step="0.05" value={stockPrice} onChange={(e) => setStockPrice(e.target.value)}/>
+          <input
+            type="number"
+            min="0"
+            step="0.05"
+            value={stockPrice}
+            onChange={(e) => setStockPrice(e.target.value)}
+          />
         </fieldset>
       </div>
 
@@ -51,7 +61,9 @@ const handleBuyClick = async () => {
         <span>Required amount ₹{totalAmount.toFixed(2)}</span>
 
         <div>
-          <button className="btn btn-blue" onClick={handleBuyClick}>Buy</button>
+          <button className="btn btn-blue" onClick={handleBuyClick}>
+            Buy
+          </button>
 
           <button className="btn btn-grey" onClick={onClose}>
             Cancel

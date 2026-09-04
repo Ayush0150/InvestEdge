@@ -10,6 +10,7 @@ function Login() {
     email: "",
     password: "",
   });
+  const [message, setMessage] = useState("");
 
   const handleChange = (e) => {
     setFormData({
@@ -20,6 +21,7 @@ function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setMessage("");
 
     try {
       const response = await fetch(`${API_URL}/login`, {
@@ -37,15 +39,13 @@ function Login() {
         : { message: await response.text() };
 
       if (!response.ok) {
-        alert(data.message || "Login failed");
+        setMessage(data.message || "Login failed");
         return;
       }
 
-      alert("Login successful");
-
       window.location.href = DASHBOARD_URL;
     } catch (error) {
-      alert(error.message || "Something went wrong during login");
+      setMessage(error.message || "Something went wrong during login");
     }
   };
 
@@ -54,6 +54,7 @@ function Login() {
       <div className="row justify-content-center">
         <div className="col-12 col-md-5">
           <h2 className="mb-4 text-center">Login to your account</h2>
+          {message && <div className="alert alert-danger">{message}</div>}
 
           <form onSubmit={handleLogin}>
             <div className="mb-3">

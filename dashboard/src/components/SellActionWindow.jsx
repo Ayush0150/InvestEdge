@@ -5,30 +5,35 @@ import "./BuyActionWindow.css";
 const SellActionWindow = ({ stock, onClose, onOrderPlaced }) => {
   const [stockQuantity, setStockQuantity] = useState(1);
   const stockPrice = stock.price;
+  const [message, setMessage] = useState("");
 
   const totalAmount = Number(stockQuantity) * Number(stockPrice);
 
-const handleSellClick = async () => {
-  try {
-    await api.post("/newOrder", {
-      name: stock.name,
-      qty: Number(stockQuantity),
-      price: Number(stockPrice),
-      mode: "SELL",
-    });
+  const handleSellClick = async () => {
+    setMessage("");
+    try {
+      await api.post("/newOrder", {
+        name: stock.name,
+        qty: Number(stockQuantity),
+        price: Number(stockPrice),
+        mode: "SELL",
+      });
 
-    onOrderPlaced();
-    onClose();
-  } catch (error) {
-    alert(error.response?.data || "Sell order failed");
-  }
-};
+      onOrderPlaced();
+      onClose();
+    } catch (error) {
+      setMessage(error.response?.data || "Sell order failed");
+    }
+  };
 
   return (
     <div className="buy-window">
       <div className="buy-window-header">
         <h3>Sell {stock.name}</h3>
       </div>
+      {message && (
+        <div className="flash-message flash-message-error">{message}</div>
+      )}
 
       <div className="buy-window-inputs">
         <fieldset>

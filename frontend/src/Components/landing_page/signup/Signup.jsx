@@ -11,6 +11,7 @@ function Signup() {
     email: "",
     password: "",
   });
+  const [message, setMessage] = useState("");
 
   const handleChange = (e) => {
     setFormData({
@@ -21,6 +22,7 @@ function Signup() {
 
   const handleSignup = async (e) => {
     e.preventDefault();
+    setMessage("");
 
     try {
       const response = await fetch(`${API_URL}/signup`, {
@@ -34,14 +36,13 @@ function Signup() {
       const data = await response.text();
 
       if (!response.ok) {
-        alert(data);
+        setMessage(data);
         return;
       }
 
-      alert("Signup successful. Please login.");
       navigate("/login");
     } catch {
-      alert("Something went wrong during signup");
+      setMessage("Something went wrong during signup");
     }
   };
 
@@ -50,6 +51,7 @@ function Signup() {
       <div className="row justify-content-center">
         <div className="col-12 col-md-5">
           <h2 className="mb-4 text-center">Create your account</h2>
+          {message && <div className="alert alert-danger">{message}</div>}
 
           <form onSubmit={handleSignup}>
             <div className="mb-3">
