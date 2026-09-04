@@ -24,6 +24,7 @@ function Login() {
     try {
       const response = await fetch(`${API_URL}/login`, {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
@@ -40,12 +41,9 @@ function Login() {
         return;
       }
 
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
-
       alert("Login successful");
 
-      window.location.href = `${DASHBOARD_URL}?token=${data.token}`;
+      window.location.href = DASHBOARD_URL;
     } catch (error) {
       alert(error.message || "Something went wrong during login");
     }

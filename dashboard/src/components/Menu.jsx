@@ -28,8 +28,8 @@ const Menu = () => {
     setIsProfileDropdownOpen(!profileDropdownOpen);
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
+  const handleLogout = async () => {
+    await api.post("/logout").catch(() => {});
     window.location.href = FRONTEND_LOGIN_URL;
   };
 

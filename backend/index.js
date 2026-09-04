@@ -1,3 +1,4 @@
+import cookieParser from "cookie-parser";
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
@@ -14,6 +15,15 @@ import UserModel from "./model/UserModel.js";
 dotenv.config();
 const PORT = process.env.PORT || 3002;
 const uri = process.env.MONGO_URL;
+const requiredEnv = ["MONGO_URL", "JWT_SECRET", "FRONTEND_URL"];
+const missingEnv = requiredEnv.filter((name) => !process.env[name]);
+
+if (missingEnv.length) {
+  throw new Error(
+    `Missing required environment variables: ${missingEnv.join(", ")}`
+  );
+}
+
 const allowedOrigins = (process.env.FRONTEND_URL || "")
   .split(",")
   .map((origin) => origin.trim())
@@ -22,22 +32,17 @@ const allowedOrigins = (process.env.FRONTEND_URL || "")
 const app = express();
 
 app.use(express.json());
+app.use(cookieParser());
 app.use(
   cors(
     allowedOrigins.length
       ? {
           origin: allowedOrigins,
+          credentials: true,
         }
       : undefined
   )
 );
-
-mongoose
-  .connect(uri)
-  .then(() => console.log("database connected successfully"))
-  .catch((e) => {
-    console.log("MongoDB connection failed:", e);
-  });
 
 app.get("/", (req, res) => {
   res.send("Backend is working!");
@@ -528,9 +533,15 @@ app.post("/login", async (req, res) => {
     { expiresIn: "1d" }
   );
 
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    maxAge: 24 * 60 * 60 * 1000,
+  });
+
   res.json({
     message: "Login successful",
-    token: token,
     user: {
       id: user._id,
       name: user.name,
@@ -539,6 +550,24 @@ app.post("/login", async (req, res) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+app.post("/logout", (req, res) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+  });
+  res.sendStatus(204);
 });
+
+mongoose
+  .connect(uri)
+  .then(() => {
+    console.log("database connected successfully");
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  })
+  .catch((error) => {
+    console.error("MongoDB connection failed:", error);
+    process.exit(1);
+  });
