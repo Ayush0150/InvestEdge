@@ -1376,3 +1376,161 @@ hr {
     width: min(260px, calc(100vw - 24px));
   }
 }
+
+@media (max-width: 768px) {
+  html {
+    overflow-x: hidden;
+  }
+
+  body {
+    overflow-x: hidden;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  .indices-container {
+    justify-content: space-between;
+  }
+
+  .nifty,
+  .sensex {
+    flex-basis: auto;
+    gap: 6px;
+  }
+
+  .nifty > *,
+  .sensex > * {
+    margin-right: 0;
+  }
+
+  .menu-container {
+    gap: 12px;
+  }
+
+  .menus {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .menus ul {
+    padding-right: 12px;
+  }
+
+  .list li {
+    padding: 12px 12px 12px 14px;
+  }
+
+  .list li:hover > .actions,
+  .actions {
+    display: flex;
+  }
+
+  .actions {
+    position: static;
+    height: auto;
+    justify-content: flex-end;
+    margin-top: 8px;
+  }
+
+  .actions > span {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  .actions span button {
+    flex: 0 0 40px;
+  }
+
+  .item {
+    min-width: 0;
+    gap: 12px;
+  }
+
+  .item > p {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .itemInfo {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .watchlist-analytics {
+    padding: 14px;
+  }
+
+  .watchlist-analytics-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .buy-window {
+    max-height: calc(100dvh - 24px);
+    overflow-y: auto;
+  }
+
+  .funds-header {
+    gap: 16px;
+  }
+
+  .funds-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .fund-input {
+    grid-column: 1 / -1;
+  }
+
+  .funds-actions .btn {
+    min-height: 42px;
+  }
+
+  .apps-header,
+  .app-card {
+    padding: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .content {
+    padding: 20px 12px 30px;
+  }
+
+  .indices-container {
+    padding-inline: 12px;
+  }
+
+  .index,
+  .index-points,
+  .percent {
+    font-size: 0.72rem;
+  }
+
+  .menu-container {
+    padding-inline: 12px;
+  }
+
+  .menus li {
+    margin-right: 14px;
+  }
+
+  .menu {
+    font-size: 0.75rem;
+  }
+
+  .order-table table {
+    min-width: 560px;
+  }
+
+  .watchlist-analytics-grid {
+    grid-template-columns: 1fr;
+  }
+}

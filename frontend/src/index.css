@@ -320,3 +320,111 @@ code {
     padding-inline: 18px;
   }
 }
+
+@media (max-width: 767.98px) {
+  html {
+    overflow-x: hidden;
+  }
+
+  body {
+    overflow-x: hidden;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  img,
+  svg,
+  video {
+    max-width: 100%;
+  }
+
+  .container,
+  .container-fluid {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .navbar .container {
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+
+  .navbar-brand img {
+    width: min(170px, 52vw) !important;
+  }
+
+  .navbar-nav .nav-link {
+    margin-left: 0;
+    padding: 10px 0;
+  }
+
+  .container.p-5,
+  .row.p-5 {
+    padding: 24px 16px !important;
+  }
+
+  .container.p-3 {
+    padding: 16px !important;
+  }
+
+  .row > .col-6,
+  .row > .col-4 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+
+  .row > .col-2 {
+    display: none;
+  }
+
+  .product-hero {
+    padding-top: 40px;
+    padding-bottom: 32px;
+  }
+
+  .product-section,
+  .product-universe {
+    padding-top: 44px;
+    padding-bottom: 44px;
+  }
+
+  .product-copy h2,
+  .product-universe h2 {
+    line-height: 1.25;
+  }
+
+  .product-links {
+    gap: 14px !important;
+  }
+
+  .product-badges img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  #supportWrapper {
+    gap: 16px;
+  }
+
+  #searchRow {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  #searchRow h1 {
+    font-size: 1.5rem;
+  }
+
+  #supportHero input {
+    min-height: 52px;
+  }
+
+  footer .container {
+    padding-top: 8px;
+    padding-bottom: 24px;
+  }
+}
