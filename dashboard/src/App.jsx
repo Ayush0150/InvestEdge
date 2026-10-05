@@ -40,27 +40,32 @@ function App() {
       <div
         style={{
           display: "flex",
+          flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
           height: "100vh",
-          background: "#0f172a",
-          color: "#94a3b8",
-          fontFamily: "sans-serif",
-          fontSize: "15px",
-          gap: "12px",
+          background: "#ffffff",
+          color: "#555",
+          fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+          fontSize: "14px",
+          gap: "14px",
         }}
       >
+        <img
+          src="/images/investedge-logo.svg"
+          alt="InvestEdge"
+          style={{ width: "150px", marginBottom: "8px", opacity: 0.9 }}
+        />
         <div
           style={{
-            width: "20px",
-            height: "20px",
-            border: "2px solid #334155",
-            borderTop: "2px solid #6366f1",
+            width: "22px",
+            height: "22px",
+            border: "2px solid #e0e0e0",
+            borderTop: "2px solid #387ed1",
             borderRadius: "50%",
             animation: "spin 0.8s linear infinite",
           }}
         />
-        Loading…
         <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </div>
     );
