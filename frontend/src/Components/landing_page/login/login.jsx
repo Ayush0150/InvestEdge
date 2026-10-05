@@ -57,9 +57,15 @@ function Login() {
       // Show success message briefly before redirecting
       setMessage({ text: `Welcome back, ${data.user?.name || ""}! Redirecting to dashboard…`, type: "success" });
 
+      // Pass token via URL hash (hash is never sent to server, safe to use)
+      // This fixes Safari's cross-port cookie blocking
+      const redirectUrl = data.token
+        ? `${DASHBOARD_URL}#token=${encodeURIComponent(data.token)}`
+        : DASHBOARD_URL;
+
       setTimeout(() => {
-        window.location.href = DASHBOARD_URL;
-      }, 1000);
+        window.location.href = redirectUrl;
+      }, 800);
     } catch (error) {
       if (error.name === "AbortError") return; // request was cancelled, don't update state
       setMessage({ text: error.message || "Something went wrong. Please try again.", type: "error" });

@@ -1,18 +1,29 @@
 import { useEffect, useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import api from "./api/api";
+import { setToken, getToken, removeToken } from "./api/api";
 import Home from "./components/Home";
 import "./index.css";
 
 const FRONTEND_LOGIN_URL = `${import.meta.env.VITE_FRONTEND_URL || "http://localhost:5174"}/login`;
 
 function App() {
-  // "checking" = verifying auth, "ok" = authenticated, "fail" = not authenticated
   const [authState, setAuthState] = useState("checking");
 
   useEffect(() => {
     let cancelled = false;
 
+    // Step 1: Check if there's a token in the URL hash (passed from login page)
+    // This handles Safari's cross-port cookie blocking
+    const hash = window.location.hash;
+    if (hash.startsWith("#token=")) {
+      const token = decodeURIComponent(hash.slice(7));
+      setToken(token);
+      // Clean the token from the URL so it doesn't stay in browser history
+      window.history.replaceState(null, "", window.location.pathname);
+    }
+
+    // Step 2: Verify auth with backend
     api
       .get("/me")
       .then(() => {
@@ -20,11 +31,11 @@ function App() {
       })
       .catch((error) => {
         if (cancelled) return;
-        // Only redirect on explicit 401 (Unauthorized) — not on network errors or other issues
         if (error.response?.status === 401 || error.response?.status === 403) {
+          removeToken();
           window.location.href = FRONTEND_LOGIN_URL;
         } else {
-          // Network error or server error — still allow access, retry will happen on next API call
+          // Network/server error — don't log user out
           setAuthState("ok");
         }
       });
@@ -34,41 +45,9 @@ function App() {
     };
   }, []);
 
+  // Show blank white screen while checking auth (no jarring loading UI)
   if (authState === "checking") {
-    // Show a minimal loading screen while verifying auth
-    return (
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          height: "100vh",
-          background: "#ffffff",
-          color: "#555",
-          fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-          fontSize: "14px",
-          gap: "14px",
-        }}
-      >
-        <img
-          src="/images/investedge-logo.svg"
-          alt="InvestEdge"
-          style={{ width: "150px", marginBottom: "8px", opacity: 0.9 }}
-        />
-        <div
-          style={{
-            width: "22px",
-            height: "22px",
-            border: "2px solid #e0e0e0",
-            borderTop: "2px solid #387ed1",
-            borderRadius: "50%",
-            animation: "spin 0.8s linear infinite",
-          }}
-        />
-        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-      </div>
-    );
+    return <div style={{ background: "#fff", height: "100vh" }} />;
   }
 
   return (

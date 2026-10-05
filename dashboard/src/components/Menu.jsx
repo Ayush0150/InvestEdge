@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import api from "../api/api";
+import api, { removeToken } from "../api/api";
 
 const FRONTEND_LOGIN_URL = `${import.meta.env.VITE_FRONTEND_URL || "http://localhost:5174"}/login`;
 
@@ -29,6 +29,7 @@ const Menu = () => {
   };
 
   const handleLogout = async () => {
+    removeToken(); // clear localStorage token (fixes Safari cross-port auth)
     await api.post("/logout").catch(() => {});
     window.location.href = FRONTEND_LOGIN_URL;
   };

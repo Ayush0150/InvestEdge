@@ -509,6 +509,7 @@ app.post("/login", async (req, res) => {
 
     res.json({
       message: "Login successful",
+      token,
       user: {
         id: user._id,
         name: user.name,
