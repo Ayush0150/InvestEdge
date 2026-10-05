@@ -441,73 +441,83 @@ app.get("/me", authMiddleware, async (req, res) => {
 });
 
 app.post("/signup", async (req, res) => {
-  const { name, email, password } = req.body;
+  try {
+    const { name, email, password } = req.body;
 
-  if (!name || !email || !password) {
-    return res.status(400).send("All fields are required");
+    if (!name || !email || !password) {
+      return res.status(400).send("All fields are required");
+    }
+
+    const existingUser = await UserModel.findOne({ email: email });
+
+    if (existingUser) {
+      return res.status(400).send("User already exists");
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = new UserModel({
+      name: name,
+      email: email,
+      password: hashedPassword,
+    });
+
+    await newUser.save();
+
+    res.send("User registered successfully");
+  } catch (error) {
+    console.error("Signup error:", error);
+    res.status(500).send("Signup failed. Please try again.");
   }
-
-  const existingUser = await UserModel.findOne({ email: email });
-
-  if (existingUser) {
-    return res.status(400).send("User already exists");
-  }
-
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  const newUser = new UserModel({
-    name: name,
-    email: email,
-    password: hashedPassword,
-  });
-
-  await newUser.save();
-
-  res.send("User registered successfully");
 });
 
 app.post("/login", async (req, res) => {
-  const { email, password } = req.body;
-  if (!email || !password) {
-    return res.status(400).json({ message: "Email and password are required" });
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(400).json({ message: "Email and password are required" });
+    }
+
+    const user = await UserModel.findOne({ email: email });
+
+    if (!user) {
+      return res.status(400).json({ message: "Invalid email or password" });
+    }
+
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordCorrect) {
+      return res.status(400).json({ message: "Invalid email or password" });
+    }
+
+    const token = jwt.sign(
+      {
+        id: user._id,
+        email: user.email,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+    );
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: 24 * 60 * 60 * 1000,
+    });
+
+    res.json({
+      message: "Login successful",
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+      },
+    });
+  } catch (error) {
+    console.error("Login error:", error);
+    res.status(500).json({ message: "Login failed. Please try again." });
   }
-
-  const user = await UserModel.findOne({ email: email });
-
-  if (!user) {
-    return res.status(400).json({ message: "Invalid email or password" });
-  }
-
-  const isPasswordCorrect = await bcrypt.compare(password, user.password);
-
-  if (!isPasswordCorrect) {
-    return res.status(400).json({ message: "Invalid email or password" });
-  }
-
-  const token = jwt.sign(
-    {
-      id: user._id,
-      email: user.email,
-    },
-    process.env.JWT_SECRET,
-    { expiresIn: "1d" }
-  );
-
-  res.cookie("token", token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-    maxAge: 24 * 60 * 60 * 1000,
-  });
-
-  res.json({
-    message: "Login successful",
-    user: {
-      id: user._id,
-      name: user.name,
-      email: user.email,
-    },
-  });
 });
 
 app.post("/logout", (req, res) => {
